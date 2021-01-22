@@ -1,11 +1,9 @@
-import org.gradle.api.artifacts.maven.MavenDeployment
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Settings
 ext {
     project_group = 'com.github.rholder'
     project_version = '2.0.0'
-    project_jdk = '1.6'
+    project_jdk = '1.8'
     project_pom = {
         name 'guava-retrying'
         packaging 'jar'
@@ -81,7 +79,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.google.guava:guava:[10.+,)'
+    compile 'com.google.guava:guava:[27.+,)'
     compile 'com.google.code.findbugs:jsr305:2.0.2'
 
     // junit testing
@@ -99,15 +97,6 @@ jar {
     }
 }
 
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
-    from 'build/docs/javadoc'
-    doFirst {
-        // Timestamp changes on every build. By evaluating it later, won't needlessly fail up-to-date checks.
-        manifest = defaultManifest()
-    }
-}
-
 task sourcesJar(type: Jar) {
     classifier = 'sources'
     from sourceSets.main.allSource
@@ -119,7 +108,6 @@ task sourcesJar(type: Jar) {
 
 artifacts {
     archives jar
-    archives javadocJar
     archives sourcesJar
 }
 
@@ -150,7 +138,7 @@ def promptPasswords() {
 
 }
 
-if(isReleaseVersion && gradle.startParameter.taskNames.contains("uploadArchives")) {
+if (isReleaseVersion && gradle.startParameter.taskNames.contains("uploadArchives")) {
     signing {
         sign configurations.archives
     }

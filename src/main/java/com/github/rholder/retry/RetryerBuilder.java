@@ -19,6 +19,7 @@ package com.github.rholder.retry;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -211,6 +212,11 @@ public class RetryerBuilder<V> {
             }
             return exceptionClass.isAssignableFrom(attempt.getExceptionCause().getClass());
         }
+
+        @Override
+        public boolean test(@Nullable Attempt<V> input) {
+            return apply(input);
+        }
     }
 
     private static final class ResultPredicate<V> implements Predicate<Attempt<V>> {
@@ -229,6 +235,11 @@ public class RetryerBuilder<V> {
             V result = attempt.getResult();
             return delegate.apply(result);
         }
+
+        @Override
+        public boolean test(@Nullable Attempt<V> input) {
+            return apply(input);
+        }
     }
 
     private static final class ExceptionPredicate<V> implements Predicate<Attempt<V>> {
@@ -245,6 +256,11 @@ public class RetryerBuilder<V> {
                 return false;
             }
             return delegate.apply(attempt.getExceptionCause());
+        }
+
+        @Override
+        public boolean test(@Nullable Attempt<V> input) {
+            return apply(input);
         }
     }
 }
